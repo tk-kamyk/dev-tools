@@ -1,0 +1,21 @@
+{
+  "name": "tk-kamyk",
+  "owner": {
+    "name": "Tomasz Kaminski"
+  },
+  "metadata": {
+    "description": "Personal Claude Code toolbox — stack manifest, seven-gate process, framework skills, guard hooks"
+  },
+  "plugins": [
+    {
+      "name": "dev-toolbox",
+      "source": "./dev-toolbox",
+      "description": "Stack-manifest-driven Claude Code toolbox: generic process skills, .NET/Next.js/Expo/Turborepo framework knowledge, guard hooks, /check + /learn + /toolbox commands",
+      "version": "0.1.0",
+      "author": { "name": "Tomasz Kaminski" },
+      "homepage": "https://github.com/tk-kamyk/dev-tools",
+      "repository": "https://github.com/tk-kamyk/dev-tools",
+      "license": "MIT"
+    }
+  ]
+}
