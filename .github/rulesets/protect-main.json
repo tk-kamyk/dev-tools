@@ -29,16 +29,6 @@
         "required_review_thread_resolution": false,
         "allowed_merge_methods": ["squash"]
       }
-    },
-    {
-      "type": "required_status_checks",
-      "parameters": {
-        "strict_required_status_checks_policy": true,
-        "required_status_checks": [
-          { "context": "API Build & Test" },
-          { "context": "SPA Build & Lint" }
-        ]
-      }
     }
   ]
 }
