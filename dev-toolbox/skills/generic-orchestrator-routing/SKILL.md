@@ -39,7 +39,7 @@ Invoke the orchestrator for anything that touches the 7-gate pipeline (see [`gen
 
 ## Aliasing rules
 
-- The local slash command `/orchestrator` is **a thin alias** that delegates to the `dev-team:orchestrator` **agent** (dev-team v10 ships the orchestrator as an agent, not a slash command — invoke it as a subagent, `subagent_type: dev-team:orchestrator`). There is no local orchestrator persona.
+- The local slash command `/orchestrator` is **a thin alias** that delegates to the `dev-team:orchestrator` **agent** — invoke it as a subagent, `subagent_type: dev-team:orchestrator` (it is an agent, not a slash command; see [`rules/dev-team-contract.md`](../../rules/dev-team-contract.md)). There is no local orchestrator persona.
 - When the user types bare `/orchestrator`, do NOT interpret as freeform text, do NOT search the repo for it as a string — delegate to the `dev-team:orchestrator` agent immediately with whatever arguments follow.
 - When a request arrives in **plain English** without any slash command, apply the threshold above. If it's substantive, invoke the orchestrator before doing anything else. If it's trivial, answer directly.
 - Do NOT improvise an alternative agent lineup. Do NOT do "inline reviews" or "inline planning" — that's the orchestrator's job.

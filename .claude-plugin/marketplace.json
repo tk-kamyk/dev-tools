@@ -11,7 +11,7 @@
       "name": "dev-toolbox",
       "source": "./dev-toolbox",
       "description": "Stack-manifest-driven Claude Code toolbox: generic process skills, .NET/Next.js/Expo/Turborepo framework knowledge, guard hooks, /check + /learn + /toolbox commands",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": { "name": "Tomasz Kaminski" },
       "homepage": "https://github.com/tk-kamyk/dev-tools",
       "repository": "https://github.com/tk-kamyk/dev-tools",

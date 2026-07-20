@@ -97,9 +97,10 @@ skill/hook.
 
 This plugin (`dev-toolbox`) defines **no agents**. `/orchestrator` is a local
 alias that delegates to the `dev-team:orchestrator` **agent** (invoked via the
-Agent tool — in dev-team v10 the orchestrator is an agent, not a slash command);
-substantive engineering work delegates there. The substantive-vs-trivial
-threshold lives in the `generic-orchestrator-routing` skill.
+Agent tool — it is an agent, not a slash command); substantive engineering work
+delegates there. The substantive-vs-trivial threshold lives in the
+`generic-orchestrator-routing` skill; the version target and invocation contract
+live in [`dev-toolbox/rules/dev-team-contract.md`](./dev-toolbox/rules/dev-team-contract.md).
 
 If you find yourself reaching for an agent persona while editing this
 repo, that's a signal to add it to `dev-team` instead — not

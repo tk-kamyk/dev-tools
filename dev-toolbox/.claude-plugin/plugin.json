@@ -1,6 +1,6 @@
 {
   "name": "dev-toolbox",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Stack-manifest-driven personal toolbox: generic process skills, framework knowledge for .NET/Next.js/Expo/Turborepo, guard hooks, and slash commands.",
   "author": {
     "name": "Tomasz Kaminski"

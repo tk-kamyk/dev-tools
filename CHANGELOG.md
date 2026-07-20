@@ -5,6 +5,22 @@ All notable changes to `dev-toolbox` (the plugin shipped from this folder).
 The format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] — 2026-07-20
+
+### Changed
+
+- **Centralised the `dev-team` dependency contract.** Added
+  `dev-toolbox/rules/dev-team-contract.md` as the single source of truth for the
+  target dev-team version (`>= v10.13.0`), the orchestrator invocation shape, and
+  the workflow-skill names dev-toolbox wires to. Version-specific facts (e.g.
+  "the orchestrator is an agent, not a slash command") no longer restated across
+  the orchestrator command, `generic-orchestrator-routing`, `dev-toolbox/CLAUDE.md`,
+  and the top-level `CLAUDE.md` — those now point at the contract. A future
+  dev-team upgrade touches one file instead of five.
+- **Slimmed `dev-toolbox/rules/delegation-map.md`** to only the entries this
+  toolbox actually wires to, replacing the broader catalogue mirror (which
+  drifted) with a pointer to `/dev-team:help`. No functional change.
+
 ## [0.2.0] — 2026-07-17
 
 ### Added

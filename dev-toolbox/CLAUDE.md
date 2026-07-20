@@ -11,10 +11,11 @@ plugin's orchestrator.
 ## Agent team and entry point
 
 Substantive engineering work delegates to the `dev-team:orchestrator` **agent**
-(invoked via the Agent tool — in dev-team v10 the orchestrator is an agent, not a
-slash command). A bare `/orchestrator` is a project-local alias that delegates to
-it. Detail and the substantive-vs-trivial threshold live in the
-`generic-orchestrator-routing` skill.
+(invoked via the Agent tool — it is an agent, not a slash command). A bare
+`/orchestrator` is a project-local alias that delegates to it. Detail and the
+substantive-vs-trivial threshold live in the `generic-orchestrator-routing`
+skill; the version target and invocation contract live in
+[`rules/dev-team-contract.md`](./rules/dev-team-contract.md).
 
 ## Development process
 
