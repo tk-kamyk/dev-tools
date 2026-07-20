@@ -5,14 +5,16 @@ A personal Claude Code toolbox. Stack-manifest-driven: the consuming project's
 and hooks based on that manifest.
 
 Plugin-shipped skills are knowledge only. The plugin defines no agents; agent
-personas come from `agentic-dev-team`. Substantive work routes through that
+personas come from `dev-team`. Substantive work routes through that
 plugin's orchestrator.
 
 ## Agent team and entry point
 
-Substantive engineering work routes through `/agentic-dev-team:orchestrator`.
-A bare `/orchestrator` is a project-local alias to the same. Detail and the
-substantive-vs-trivial threshold live in the `generic-orchestrator-routing` skill.
+Substantive engineering work delegates to the `dev-team:orchestrator` **agent**
+(invoked via the Agent tool — in dev-team v10 the orchestrator is an agent, not a
+slash command). A bare `/orchestrator` is a project-local alias that delegates to
+it. Detail and the substantive-vs-trivial threshold live in the
+`generic-orchestrator-routing` skill.
 
 ## Development process
 
@@ -25,7 +27,7 @@ Two layers, governed separately. See `generic-memory-policy`:
 
 - User-level auto-memory at `~/.claude/projects/<slug>/memory/` — persistent across
   sessions; harness-managed.
-- Project-local `memory/` — used by `agentic-dev-team` for phase progress and
+- Project-local `memory/` — used by `dev-team` for phase progress and
   `decisions.md`.
 
 ## Required: project-side stack manifest
@@ -70,7 +72,7 @@ hook validates this block on every edit.
 | `session-start-pulse.sh` | SessionStart | Per-stack heartbeats from the manifest, env staleness flag |
 | `stop-test-reminder.sh` | Stop | Nags if modified implementation files lack a test run |
 | `guard-stack-manifest.sh` | PreToolUse / Write\|Edit | Validates the fenced YAML manifest on every CLAUDE.md edit |
-| `guard-pr-format.sh` | PreToolUse / ADO PR mcps | Enforces `type(topic): Description` title format |
+| `guard-pr-format.sh` | PreToolUse / Azure DevOps + GitHub PR mcps | Enforces `type(topic): Description` title format |
 | `guard-private-folders.sh` + `*-bash.sh` | PreToolUse | Underscore prefix for non-route folders in Next.js App Router |
 | `guard-process-env.sh` | PreToolUse / Write\|Edit | Blocks raw `process.env`; forces `import { env } from '@/lib/env'` |
 | `guard-frontend-query-caching.sh` | PreToolUse / Write\|Edit | Blocks per-query `staleTime` / `gcTime` overrides |
@@ -78,13 +80,32 @@ hook validates this block on every edit.
 All hooks are stack-scoped: they read the manifest, exit 0 silently when their
 target stack isn't enabled.
 
+## MCP servers
+
+The plugin bundles a `.mcp.json` at its root that registers two servers, so
+installing the plugin makes their tools available:
+
+| Server (name) | Transport | Notes |
+|---|---|---|
+| `github` | HTTP (`https://api.githubcopilot.com/mcp/`) | Org-agnostic; OAuth on first use. Emits `mcp__github__*` tools. |
+| `azure-devops` | stdio (`npx -y @azure-devops/mcp ${ADO_MCP_ORG}`) | Needs the `ADO_MCP_ORG` env var (your Azure DevOps org). Emits `mcp__azure-devops__*` tools. |
+
+If `ADO_MCP_ORG` is unset, the Azure server won't start — the GitHub side is
+unaffected. `/create-pr` and the `guard-pr-format.sh` hook depend on these tool
+names (`mcp__github__create_pull_request`,
+`mcp__azure-devops__repo_create_pull_request`), so the server names must not be
+renamed. A project that already configures its own `azure-devops` server can
+collide by name with the bundled one — see the coexistence note in the repo
+README.
+
 ## Slash commands
 
 | Command | Purpose |
 |---|---|
-| `/orchestrator` | Alias to `/agentic-dev-team:orchestrator` |
+| `/orchestrator` | Alias delegating to the `dev-team:orchestrator` agent |
 | `/toolbox` | Live inventory of commands, skills, hooks, plugin version |
 | `/check` | Per-stack test/lint matrix from the manifest |
+| `/create-pr` | Create a PR; auto-detects GitHub vs Azure DevOps and uses the matching MCP |
 | `/affected` | Turborepo `--affected` change scope |
 | `/generate-api` | Regen Orval client; run check-types |
 | `/env-status` | Cross-stack env-file health |

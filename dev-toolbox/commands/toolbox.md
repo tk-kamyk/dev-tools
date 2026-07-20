@@ -1,6 +1,6 @@
 ---
 name: toolbox
-description: Self-introspection. Lists local commands, local skills with stack tags, the active stack manifest, plugin skills filtered by manifest, and the agentic-dev-team plugin version. Pure read.
+description: Self-introspection. Lists local commands, local skills with stack tags, the active stack manifest, plugin skills filtered by manifest, and the dev-team plugin version. Pure read.
 user-invocable: true
 ---
 
@@ -27,17 +27,17 @@ Inspect the `.claude/` toolbox and report the inventory. Do NOT modify anything.
 
 5. **Plugin version**:
    ```
-   ls -d ~/.claude/plugins/cache/bfinster/agentic-dev-team/*/ 2>/dev/null | tail -1
+   ls -d ~/.claude/plugins/cache/bfinster/dev-team/*/ 2>/dev/null | tail -1
    ```
    Report the version directory name.
 
-6. **Plugin skills filtered by manifest**: this is best-effort — the plugin's skills don't carry our `metadata.stack` tags. Skip if no easy way to filter; report the plugin's skill count from `~/.claude/plugins/cache/bfinster/agentic-dev-team/*/skills/`.
+6. **Plugin skills filtered by manifest**: this is best-effort — the plugin's skills don't carry our `metadata.stack` tags. Skip if no easy way to filter; report the plugin's skill count from `~/.claude/plugins/cache/bfinster/dev-team/*/skills/`.
 
 ## Output format
 
 ```
 === dev-toolbox ===
-Plugin: agentic-dev-team v<version>
+Plugin: dev-team v<version>
 Active stacks: <comma-separated tags>
 
 Local commands (.claude/commands/):

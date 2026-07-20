@@ -7,12 +7,13 @@ INPUT=$(cat)
 
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 case "$TOOL" in
-  mcp__azure-devops__repo_create_pull_request|mcp__azure-devops__repo_update_pull_request) ;;
+  mcp__azure-devops__repo_create_pull_request|mcp__azure-devops__repo_update_pull_request|mcp__github__create_pull_request) ;;
   *) exit 0 ;;
 esac
 
 TITLE=$(echo "$INPUT" | jq -r '.tool_input.title // empty')
-DESCRIPTION=$(echo "$INPUT" | jq -r '.tool_input.description // empty')
+# Azure DevOps uses `description`; GitHub uses `body`.
+DESCRIPTION=$(echo "$INPUT" | jq -r '.tool_input.description // .tool_input.body // empty')
 
 if [[ -n "$TITLE" ]]; then
   if ! [[ "$TITLE" =~ ^(feat|fix|chore|refactor|docs|test)\([a-z][a-z0-9-]*\):\ [A-Z] ]]; then

@@ -216,7 +216,7 @@ SUGGESTED="$TARGET_CLAUDE/CLAUDE.md.suggested"
   echo
   echo "## Agent Team and Entry Point"
   echo
-  echo "Substantive engineering work routes through \`/agentic-dev-team:orchestrator\`."
+  echo "Substantive engineering work delegates to the \`dev-team:orchestrator\` agent."
   echo "Bare \`/orchestrator\` is a project-local alias. See \`generic-orchestrator-routing\` skill for the threshold."
   echo
   echo "## Stack Manifest (single source of truth)"

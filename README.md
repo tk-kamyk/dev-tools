@@ -9,10 +9,10 @@ This repo bundles two independent assets.
 **`dev-toolbox/`** is a [Claude Code](https://docs.claude.com/claude-code)
 plugin. The repo doubles as a local Claude Code marketplace (`tk-kamyk`) that
 ships it. The plugin is knowledge-only — skills, hooks, slash commands. It
-defines no agent personas; substantive engineering work delegates to
-[`agentic-dev-team`](https://github.com/bdfinst/agentic-dev-team) via
-`/agentic-dev-team:orchestrator` (a bare `/orchestrator` is a local alias to
-the same). Stack-manifest-driven: each consuming project declares which
+defines no agent personas; substantive engineering work delegates to the
+[`dev-team`](https://github.com/bdfinst/agentic-dev-team) plugin's
+`dev-team:orchestrator` agent (a bare `/orchestrator` is a local alias that
+delegates to it). Stack-manifest-driven: each consuming project declares which
 stacks are enabled (`.NET`, `Next.js`, `Expo`, `Turborepo`, `Azure`, …) and
 the plugin filters skills and hooks accordingly. See
 [`dev-toolbox/README.md`](./dev-toolbox/README.md) for the full surface.
@@ -44,6 +44,7 @@ dev-tools/
 │   ├── CLAUDE.md             # loaded into context when the plugin is active
 │   ├── README.md             # plugin docs
 │   ├── settings.json         # hook wiring
+│   ├── .mcp.json             # bundled github + azure-devops MCP servers
 │   ├── commands/             # /toolbox, /check, /learn, /orchestrator, …
 │   ├── skills/               # generic-* + framework knowledge (dotnet, nextjs, expo, …)
 │   ├── hooks/                # guard-* + session pulse + stop reminder
@@ -65,10 +66,28 @@ is a two-step Claude Code flow: add the marketplace, then install the plugin.
 - Claude Code (CLI, IDE extension, or desktop app) recent enough to support
   plugins. If `/plugin` doesn't autocomplete, your build is too old —
   upgrade first.
+- The [`dev-team`](https://github.com/bdfinst/agentic-dev-team) plugin (from the
+  `bfinster` marketplace) — **required** for substantive work. `dev-toolbox`
+  ships no agent personas: `/orchestrator`, the seven-gate pipeline, and every
+  `/dev-team:*` command route to it. Install it alongside `dev-toolbox`:
+  ```
+  /plugin marketplace add bdfinst/agentic-dev-team
+  /plugin install dev-team@bfinster
+  ```
+  It needs `jq` and `gh` on your `PATH`. Run `/dev-team:setup` (or `/setup`) in
+  your project after installing. Note: the plugin was formerly named
+  `agentic-dev-team` (namespace `/agentic-dev-team:*`); it is now `dev-team`
+  (`/dev-team:*`).
 - The consuming project must have a `CLAUDE.md` with a `# stack-manifest`
   fenced YAML block (see [`dev-toolbox/CLAUDE.md`](./dev-toolbox/CLAUDE.md)
   for the schema). The plugin is harmless without one, but the stack-aware
   hooks and `/check` only do useful work when the manifest is present.
+- For `/create-pr`: the plugin bundles a `.mcp.json` that registers a `github`
+  (hosted HTTP) and an `azure-devops` (`npx @azure-devops/mcp`) MCP server. The
+  Azure server reads your org from the `ADO_MCP_ORG` env var — set it
+  (`export ADO_MCP_ORG=your-org`) before the Azure path works. GitHub falls back
+  to the `gh` CLI if its MCP server isn't available. See the plugin's
+  [MCP prerequisites](./dev-toolbox/README.md#mcp-prerequisites).
 
 > All steps run **inside Claude Code**, not in your shell.
 
@@ -152,8 +171,15 @@ this toolbox), be aware of overlap:
 - **Skills:** skills with the same `name:` collide. Claude Code's behaviour
   on collision is undefined — keep one canonical copy.
 - **Commands:** command names of identical slug collide the same way. The
-  plugin intentionally **drops** `sync-toolbox`, `create-pr`, and
-  `work-status` so they only exist in `.claude/` if a project wants them.
+  plugin intentionally **drops** `sync-toolbox` and `work-status` so they only
+  exist in `.claude/` if a project wants them. `create-pr` now ships in the
+  plugin as a generic, host-detecting command — if a project keeps its own
+  project-local `create-pr`, the two collide by slug; drop the local copy once
+  the plugin version covers your needs.
+- **MCP servers:** the plugin's bundled `.mcp.json` registers a server named
+  `azure-devops`. If your project also defines an `azure-devops` server (via a
+  project `.mcp.json` or `claude mcp add`), the two definitions of the same name
+  can collide — keep one canonical definition.
 
 Once the plugin path is the canonical one for your project, slim down
 `.claude/` accordingly.

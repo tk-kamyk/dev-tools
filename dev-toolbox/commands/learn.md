@@ -7,7 +7,7 @@ user-invocable: true
 
 Capture the feedback in `$ARGUMENTS` and route it to the right destination in the toolbox.
 
-This command is for **deliberate** capture moments — "I want this written down somewhere durable." Passive corrections during chat are picked up automatically by `agentic-dev-team:feedback-learning`'s keyword detection without needing `/learn`.
+This command is for **deliberate** capture moments — "I want this written down somewhere durable." Passive corrections during chat are picked up automatically by `dev-team:feedback-learning`'s keyword detection without needing `/learn`.
 
 ## Steps
 
@@ -21,7 +21,7 @@ This command is for **deliberate** capture moments — "I want this written down
 
 ## Keyword pass-through
 
-If `$ARGUMENTS` explicitly uses one of the plugin's keywords (`amend`, `learn`, `remember`, `forget`), also invoke `agentic-dev-team:feedback-learning` after step 6 — the plugin's tooling is the source of truth for those keywords (rollback machinery, recurring-correction detection). The local skill provides the destination; the plugin owns the registry.
+If `$ARGUMENTS` explicitly uses one of the plugin's keywords (`amend`, `learn`, `remember`, `forget`), also invoke `dev-team:feedback-learning` after step 6 — the plugin's tooling is the source of truth for those keywords (rollback machinery, recurring-correction detection). The local skill provides the destination; the plugin owns the registry.
 
 ## Examples
 

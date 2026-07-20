@@ -42,7 +42,7 @@
         ]
       },
       {
-        "matcher": "mcp__azure-devops__repo_create_pull_request|mcp__azure-devops__repo_update_pull_request",
+        "matcher": "mcp__azure-devops__repo_create_pull_request|mcp__azure-devops__repo_update_pull_request|mcp__github__create_pull_request",
         "hooks": [
           {
             "type": "command",

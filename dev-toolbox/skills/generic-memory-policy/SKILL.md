@@ -12,7 +12,7 @@ Two memory layers exist. The toolbox doesn't replace either — it documents who
 | Layer | Location | Owner | Use for |
 |---|---|---|---|
 | User-level auto-memory | `~/.claude/projects/<project-slug>/memory/` (with `MEMORY.md` index) | Claude Code harness (rules in the harness system message) | Persistent across sessions — user role, feedback, project-level facts not in the repo, external references |
-| Project-local `memory/` | `<repo>/memory/` (already exists) | `agentic-dev-team` plugin's three-phase workflow | Phase progress files (research/plan/implementation), `decisions.md` (DEC-YYYY-MM-DD-NNN entries), session continuation state |
+| Project-local `memory/` | `<repo>/memory/` (already exists) | `dev-team` plugin's three-phase workflow | Phase progress files (research/plan/implementation), `decisions.md` (DEC-YYYY-MM-DD-NNN entries), session continuation state |
 
 ## What to save where
 
@@ -34,7 +34,7 @@ Use during a feature's lifecycle, owned by the plugin's three-phase workflow:
 - `memory/<feature>/implementation.md` — Phase 3 step-by-step progress.
 - `memory/decisions.md` — `DEC-YYYY-MM-DD-NNN` entries: significant routing or scope decisions.
 
-When a feature ships, archive its phase files (or let the plugin do so via `/agentic-dev-team:finalize` if available) and append the final decision entry to `decisions.md`.
+When a feature ships, archive its phase files (or let the plugin do so if it offers an equivalent end-of-feature step) and append the final decision entry to `decisions.md`.
 
 ## What NOT to save in either layer
 

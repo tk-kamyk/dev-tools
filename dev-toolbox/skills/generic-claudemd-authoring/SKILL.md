@@ -13,7 +13,7 @@ CLAUDE.md is Claude-only context, not human documentation. Minimise size ruthles
 
 - If a convention is enforced by a hook, do NOT document it in CLAUDE.md. The hook is the source of truth.
 - If a procedural behaviour is defined in a skill, do NOT restate it in CLAUDE.md. Link to the skill by name.
-- If the `agentic-dev-team` plugin already covers a workflow (orchestrator, three-phase, code-review, gates, memory), do NOT duplicate. Point at the plugin entry.
+- If the `dev-team` plugin already covers a workflow (orchestrator, three-phase, code-review, gates, memory), do NOT duplicate. Point at the plugin entry.
 - Only include things Claude needs *proactively* on every turn: stack manifest, entry point, project identity, repo layout, tech-stack table, naming conventions.
 - Prefer terse bullets and tables over prose. No motivational language. No "this codebase is awesome" intros.
 - No code comments saying "see CLAUDE.md" either — that breeds duplication.

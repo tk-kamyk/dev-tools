@@ -21,7 +21,7 @@ The orchestrator and any local skill that triggers process work should consult t
 - If the requirement is missing or unclear, **ask the user**. Do not guess.
 - If the chat reveals requirement changes, **update the requirements file** in the same change set.
 
-Delegates to `/agentic-dev-team:specs` when the four-artifact spec set (Intent / BDD / Architecture / Acceptance) is needed.
+Delegates to `/dev-team:specs` when the four-artifact spec set (Intent / BDD / Architecture / Acceptance) is needed.
 
 ### Gate 2 — BDD specification
 
@@ -30,7 +30,7 @@ Delegates to `/agentic-dev-team:specs` when the four-artifact spec set (Intent /
 - Tag every scenario to its governing requirement ID.
 - Get user confirmation before proceeding.
 
-Delegates to `/agentic-dev-team:feature-file-validation` for syntax + scenario-quality checks.
+Delegates to `/dev-team:feature-file-validation` for syntax + scenario-quality checks.
 
 ### Gate 3 — Mocked UI (stack-conditional)
 
@@ -50,7 +50,7 @@ Delegates to `/agentic-dev-team:feature-file-validation` for syntax + scenario-q
 - Create skeleton implementation classes (entities, DTOs, validators, repositories, endpoints, components) that throw `NotImplementedException` / `throw new Error('not implemented')` — the solution **MUST compile**.
 - ALL tests must FAIL at **runtime** (red), not at compile time, before implementation.
 - Verify by running the test command from the manifest for each in-scope stack — e.g. `dotnet test <solution>.slnx` or `pnpm test` in the frontend root.
-- **Self-review before handoff:** run `/agentic-dev-team:code-review --changed` against the Gate 4 changes and address findings before asking the user to review.
+- **Self-review before handoff:** run `/dev-team:code-review --changed` against the Gate 4 changes and address findings before asking the user to review.
 
 ### Gate 5 — Implementation (stack-conditional, but usually applies)
 
@@ -62,7 +62,7 @@ Delegates to `/agentic-dev-team:feature-file-validation` for syntax + scenario-q
   - **expo**: real screens, navigation, native modules.
 - Run the test command for each in-scope stack — ALL tests must PASS (green).
 - If a test fails, fix the **implementation**, not the test. If the test is genuinely wrong, fix it deliberately and document why in the commit message. **Never edit existing tests just to chase green** — see `generic-code-quality` "Test discipline".
-- **Self-review before handoff:** run `/agentic-dev-team:code-review --changed` against every coding-gate output (Gate 4 tests + Gate 5 implementation). Address findings BEFORE presenting work for human approval. Only once the self-review is clean (or remaining findings are deliberately accepted with a stated reason) do you ask the user to review.
+- **Self-review before handoff:** run `/dev-team:code-review --changed` against every coding-gate output (Gate 4 tests + Gate 5 implementation). Address findings BEFORE presenting work for human approval. Only once the self-review is clean (or remaining findings are deliberately accepted with a stated reason) do you ask the user to review.
 
 ### Gate 6 — Connect UI to API (stack-conditional)
 
@@ -105,7 +105,7 @@ Default = no skips. Justified skips = exception, not norm.
 ## Anti-patterns
 
 - Skipping Gate 4 silently because "the change is small". Skill enforces RED-GREEN-REFACTOR — the discipline matters more than the size.
-- Skipping the self-review (`/agentic-dev-team:code-review --changed`) between Gates 4 and 5, or between Gate 5 and human handoff. Self-review catches the cheap-to-fix issues before the human spends time.
+- Skipping the self-review (`/dev-team:code-review --changed`) between Gates 4 and 5, or between Gate 5 and human handoff. Self-review catches the cheap-to-fix issues before the human spends time.
 - Editing tests to make them pass when the implementation is buggy. Fix the implementation.
 - Letting Gate 1 conversations not flow back to the requirements file. If the chat reveals new constraints, update `docs/requirements/` in the same change set.
 - Treating Gate 7 as a vestigial step. The Code-Standards-feedback-loop is how the toolbox stays sharp.

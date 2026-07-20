@@ -91,17 +91,18 @@ skill/hook.
   hooks, marketplace mechanics, scripts, slash commands.
 - **Not in this repo at all:** project glossaries, vendor adapters,
   project-specific Azure layout, agent personas. Agent personas come from
-  [`agentic-dev-team`](https://github.com/bdfinst/agentic-dev-team).
+  [`dev-team`](https://github.com/bdfinst/agentic-dev-team).
 
-## Routing to agentic-dev-team
+## Routing to dev-team
 
-The plugin defines **no agents**. `/orchestrator` is a local alias to
-`/agentic-dev-team:orchestrator`; substantive engineering work delegates
-there. The substantive-vs-trivial threshold lives in the
-`generic-orchestrator-routing` skill.
+This plugin (`dev-toolbox`) defines **no agents**. `/orchestrator` is a local
+alias that delegates to the `dev-team:orchestrator` **agent** (invoked via the
+Agent tool — in dev-team v10 the orchestrator is an agent, not a slash command);
+substantive engineering work delegates there. The substantive-vs-trivial
+threshold lives in the `generic-orchestrator-routing` skill.
 
 If you find yourself reaching for an agent persona while editing this
-repo, that's a signal to add it to `agentic-dev-team` instead — not
+repo, that's a signal to add it to `dev-team` instead — not
 here.
 
 ## Don't break

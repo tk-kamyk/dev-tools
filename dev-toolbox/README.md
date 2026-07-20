@@ -19,26 +19,26 @@ the live inventory.
 │  generic-orchestrator-routing  (substantive? → orchestrator)          │
 │    │                                                                  │
 │    ▼                                                                  │
-│  /agentic-dev-team:orchestrator  (plugin — three-phase workflow)      │
+│  dev-team:orchestrator agent  (three-phase workflow)                 │
 │    │                                                                  │
 │    │  reads stack manifest (project's CLAUDE.md fenced YAML)          │
 │    │  filters skills whose metadata.stack ⊆ enabled stacks            │
 │    ▼                                                                  │
-│  agentic-dev-team team agents + filtered dev-toolbox skills        │
+│  dev-team agents + filtered dev-toolbox skills                       │
 │    │   architect, software-engineer, qa-engineer, …                   │
 │    │   dotnet-*, nextjs-*, expo-*, generic-* skills                   │
 │    ▼                                                                  │
 │  generic-gate-pipeline  (Gate 1 → 2 → 3 → 4 → 5 → 6 → 7)              │
 │    │                                                                  │
 │    ▼                                                                  │
-│  /agentic-dev-team:code-review  (review agents per touched file)      │
+│  /dev-team:code-review  (review agents per touched file)             │
 │    │                                                                  │
 │    ▼                                                                  │
 │  Gate 7 → generic-feedback-capture  (corrections → skills / rules)    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-The toolbox is split deliberately. **The `agentic-dev-team` plugin** ships the
+The toolbox is split deliberately. **The `dev-team` plugin** ships the
 team — persona agents, the three-phase workflow, review pipeline, model
 routing, audit infrastructure. It doesn't know your project. **`dev-toolbox`**
 adds stack-manifest-driven framework knowledge and the routing logic that filters
@@ -55,8 +55,8 @@ skills whose `metadata.stack` doesn't intersect enabled stacks are filtered out.
 User says: *"Add a daily limit per <entity>."*
 
 1. **Routing.** `generic-orchestrator-routing` decides: substantive (new
-   behaviour, multiple files, tests required). Invoke
-   `/agentic-dev-team:orchestrator`.
+   behaviour, multiple files, tests required). Delegate to the
+   `dev-team:orchestrator` agent.
 2. **Stack scoping.** Orchestrator reads the manifest. Touches API (limit
    enforcement) and SPA (admin UI). Enabled stacks: `dotnet`, `nextjs`,
    `react`, `tailwind`, …
@@ -70,11 +70,11 @@ User says: *"Add a daily limit per <entity>."*
 6. **Gate 3 — Mocked UI.** SPA component with hardcoded data.
 7. **Gate 4 — Failing tests.** xUnit + Vitest skeletons; all red.
 8. **Gate 5 — Implementation.** Tests go green. Self-review via
-   `/agentic-dev-team:code-review --changed`.
+   `/dev-team:code-review --changed`.
 9. **Gate 6 — Connect UI to API.** Replace mocks with BFF calls.
 10. **Gate 7 — Cleanup + feedback capture.** "Next time, do X" gets routed
     through `generic-feedback-capture` into the right skill.
-11. **PR.** `/agentic-dev-team:pr` (full pre-PR quality gate) or your project's
+11. **PR.** `/dev-team:pr` (full pre-PR quality gate) or your project's
     own create-pr command.
 
 ## Skill taxonomy
@@ -103,7 +103,7 @@ enabled — so unrelated work isn't slowed down.
 |---|---|---|
 | `session-start-pulse.sh` | SessionStart | Per-stack heartbeats — git status vs main, uncommitted changes, last commit, `.NET` / Next.js / Expo versions for each enabled stack |
 | `stop-test-reminder.sh` | Stop | Nags if `.cs` / `.ts` / `.tsx` were modified without running tests |
-| `guard-pr-format.sh` | PreToolUse on Azure DevOps PR mcps | Enforces `type(topic): Description` title format; rejects literal `\n` in body |
+| `guard-pr-format.sh` | PreToolUse on Azure DevOps + GitHub PR mcps | Enforces `type(topic): Description` title format; rejects literal `\n` in body |
 | `guard-private-folders.sh` + `*-bash.sh` | PreToolUse on Write/Edit/Bash | Forces underscore prefix on non-route folders in `app/` (Next.js App Router) |
 | `guard-process-env.sh` | PreToolUse on Write/Edit | Blocks raw `process.env`; forces `import { env } from '@/lib/env'` |
 | `guard-frontend-query-caching.sh` | PreToolUse on Write/Edit | Blocks per-query `staleTime` / `gcTime` overrides; cache config lives globally |
@@ -113,23 +113,53 @@ enabled — so unrelated work isn't slowed down.
 
 | Command | Purpose |
 |---|---|
-| `/orchestrator` | Alias to `/agentic-dev-team:orchestrator` |
+| `/orchestrator` | Alias delegating to the `dev-team:orchestrator` agent |
 | `/toolbox` | Live inventory of commands, skills, hooks, plugin version |
 | `/check` | Per-stack test/lint matrix from the manifest |
+| `/create-pr` | Create a PR; auto-detects GitHub vs Azure DevOps and drives the matching MCP (gh CLI fallback for GitHub) |
 | `/affected` | Turborepo `--affected` change scope |
 | `/generate-api` | Regen Orval client; run check-types |
 | `/env-status` | Cross-stack env-file health |
 | `/learn` | Deliberate feedback capture via `generic-feedback-capture` |
 
-Plus all `/agentic-dev-team:*` commands shipped by the `agentic-dev-team` plugin.
+Plus all `/dev-team:*` commands shipped by the `dev-team` plugin.
+
+## MCP prerequisites
+
+`/create-pr` and the `guard-pr-format.sh` hook drive host-specific MCP servers.
+The plugin bundles a `.mcp.json` at its root that registers both, so installing
+the plugin wires them up automatically:
+
+| Server | What it powers |
+|---|---|
+| `github` (hosted HTTP) | GitHub PR creation (`mcp__github__*`). Org-agnostic; prompts for OAuth on first use. |
+| `azure-devops` (`npx @azure-devops/mcp`) | Azure DevOps PRs and work items (`mcp__azure-devops__*`). Needs the `ADO_MCP_ORG` env var set to your org. |
+
+Set the Azure org before the server can start (e.g. in your shell profile):
+
+```
+export ADO_MCP_ORG=your-org
+```
+
+If you'd rather register the servers yourself instead of relying on the bundled
+`.mcp.json`, the equivalents are:
+
+```
+claude mcp add --transport http github https://api.githubcopilot.com/mcp/
+claude mcp add azure-devops -- npx -y @azure-devops/mcp <your-org>
+```
+
+The GitHub path falls back to the `gh` CLI if the `github` MCP server isn't
+available, so GitHub PRs work even without it. The Azure path requires the
+`azure-devops` server.
 
 ## How to extend
 
 **Add a skill** — pick a stack prefix (`<stack>-<topic>` or `generic-<topic>`),
 create `<plugin>/skills/<name>/SKILL.md`. Frontmatter needs `name`,
 `description`, and `metadata.stack: [<tag>, ...]`. Read
-`generic-claudemd-authoring` (general principles) and
-`agentic-dev-team:agent-skill-authoring` (plugin conventions) first.
+`generic-claudemd-authoring` (general principles) first; validate the result
+with the plugin's `/dev-team:agent-audit`.
 
 **Add a hook** — script in `<plugin>/hooks/`, `chmod +x`, then add an entry to
 `<plugin>/settings.json` under the matching event and matcher. Use the existing

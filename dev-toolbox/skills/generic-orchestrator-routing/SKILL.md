@@ -1,6 +1,6 @@
 ---
 name: generic-orchestrator-routing
-description: Apply when deciding whether a user request should route through /agentic-dev-team:orchestrator or be answered directly. Defines the substantive vs trivial threshold and the bare-/orchestrator aliasing rule.
+description: Apply when deciding whether a user request should route through the dev-team orchestrator or be answered directly. Defines the substantive vs trivial threshold and the bare-/orchestrator aliasing rule.
 metadata:
   stack: [generic]
   specificity: 95
@@ -23,7 +23,7 @@ Handle these inline without invoking the orchestrator:
 - **Doc reads** — what does CLAUDE.md say about X, summarise this design doc.
 - **Simple `run X` commands** — run the tests, run the lint, run the dev server.
 
-### Orchestrator (route through `/agentic-dev-team:orchestrator`)
+### Orchestrator (delegate to the `dev-team:orchestrator` agent)
 
 Invoke the orchestrator for anything that touches the 7-gate pipeline (see [`generic-gate-pipeline`](../generic-gate-pipeline/SKILL.md)):
 
@@ -39,10 +39,18 @@ Invoke the orchestrator for anything that touches the 7-gate pipeline (see [`gen
 
 ## Aliasing rules
 
-- The local slash command `/orchestrator` is **a thin alias** to `/agentic-dev-team:orchestrator`. There is no local orchestrator persona.
-- When the user types bare `/orchestrator`, do NOT interpret as freeform text, do NOT search the repo for it as a string — invoke the plugin orchestrator skill immediately with whatever arguments follow.
+- The local slash command `/orchestrator` is **a thin alias** that delegates to the `dev-team:orchestrator` **agent** (dev-team v10 ships the orchestrator as an agent, not a slash command — invoke it as a subagent, `subagent_type: dev-team:orchestrator`). There is no local orchestrator persona.
+- When the user types bare `/orchestrator`, do NOT interpret as freeform text, do NOT search the repo for it as a string — delegate to the `dev-team:orchestrator` agent immediately with whatever arguments follow.
 - When a request arrives in **plain English** without any slash command, apply the threshold above. If it's substantive, invoke the orchestrator before doing anything else. If it's trivial, answer directly.
 - Do NOT improvise an alternative agent lineup. Do NOT do "inline reviews" or "inline planning" — that's the orchestrator's job.
+
+## Missing a capability? Default to the plugin
+
+If a task needs a skill, workflow, or agent that the **local** toolbox doesn't provide, assume the `dev-team` plugin already covers it before hand-rolling a local equivalent. The plugin ships a large catalogue (dozens of `/dev-team:*` skills plus specialist agents) that this repo's `rules/delegation-map.md` only samples. When something is missing locally:
+
+- Look it up first — `/dev-team:help` (or the plugin's `knowledge/skills-registry.md`) lists the full set.
+- Prefer routing to the plugin — invoke the matching `/dev-team:*` skill, or delegate to the `dev-team:orchestrator` agent for multi-step work — over writing a new local skill/command.
+- Only add a **local** entry when the gap is genuinely project-specific (paths, glossary, vendor integrations) or is a thin alias that pre-loads project context. See `rules/delegation-map.md` → "When to write a local entry vs use the plugin".
 
 ## Examples
 

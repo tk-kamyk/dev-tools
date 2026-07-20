@@ -5,6 +5,45 @@ All notable changes to `dev-toolbox` (the plugin shipped from this folder).
 The format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-07-17
+
+### Added
+
+- `/create-pr` slash command — creates a pull request for the current branch,
+  auto-detecting GitHub vs Azure DevOps from the git remote and driving the
+  matching MCP server (falls back to the `gh` CLI for GitHub). Generic: parses
+  org/project/repo from the remote, never hardcodes them.
+- Bundled `dev-toolbox/.mcp.json` registering a `github` (hosted HTTP) and an
+  `azure-devops` (`npx @azure-devops/mcp ${ADO_MCP_ORG}`) MCP server, so
+  installing the plugin wires them up.
+
+### Changed
+
+- `guard-pr-format.sh` now also fires on `mcp__github__create_pull_request`
+  (reads GitHub's `body` field alongside Azure's `description`), so the
+  `type(topic): Description` title contract applies to GitHub PRs too.
+  `settings.json` matcher extended to match the GitHub PR-create tool.
+- `create-pr` is no longer "intentionally dropped" from the plugin — it ships
+  as a generic command. Docs (`README.md`, `dev-toolbox/README.md`,
+  `dev-toolbox/CLAUDE.md`) updated with MCP prerequisites and coexistence notes.
+- **Migrated all references from the `agentic-dev-team` namespace to `dev-team`**
+  to match upstream, which renamed the plugin (`agentic-dev-team` →
+  `dev-team`, marketplace `bfinster`). Every `/agentic-dev-team:*` command,
+  skill reference, alias, and the plugin-cache path (`cache/bfinster/dev-team/`)
+  now uses `dev-team`. The GitHub repo URL is unchanged (the repo is still
+  `bdfinst/agentic-dev-team`).
+- Documented the `dev-team` plugin as a **required prerequisite** in the repo
+  README, with install commands (`/plugin marketplace add
+  bdfinst/agentic-dev-team`; `/plugin install dev-team@bfinster`).
+- Verified every `dev-team:*` reference against the installed plugin
+  (v10.13.0) and corrected the drift: the orchestrator is now an **agent**
+  (invoked via the Agent tool), not a `/dev-team:orchestrator` slash command —
+  the `/orchestrator` alias, `generic-orchestrator-routing`, and the docs now
+  delegate to the `dev-team:orchestrator` agent. Renamed `js-project-init` →
+  `project-init`; dropped `root-why` (folded into `systematic-debugging`),
+  `add-plugin`, `finalize`, and `agent-skill-authoring` (no longer shipped —
+  authoring validation now points to `/dev-team:agent-audit`).
+
 ## [0.1.0] — 2026-05-20
 
 Initial extraction from the project-local `.claude/` toolbox.

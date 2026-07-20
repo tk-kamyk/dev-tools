@@ -8,9 +8,9 @@ metadata:
 
 # Feedback capture & routing
 
-The `agentic-dev-team:feedback-learning` plugin skill owns the **mechanics** of capturing user corrections — keyword detection, audit-trail JSONL format, rollback machinery, and the "3+ corrections on same topic → propose update" heuristic. Read it for those concerns.
+The `dev-team:feedback-learning` plugin skill owns the **mechanics** of capturing user corrections — keyword detection, audit-trail JSONL format, rollback machinery, and the "3+ corrections on same topic → propose update" heuristic. Read it for those concerns.
 
-This skill owns the **destinations**. Where does each kind of feedback land in this project's toolbox? When this skill is loaded alongside `agentic-dev-team:feedback-learning`, **this skill's destination table takes precedence** for files under this project. The plugin's table (which defaults to `CLAUDE.md` and `REVIEW-CONTEXT.md`) is the wrong shape for our skill-based structure.
+This skill owns the **destinations**. Where does each kind of feedback land in this project's toolbox? When this skill is loaded alongside `dev-team:feedback-learning`, **this skill's destination table takes precedence** for files under this project. The plugin's table (which defaults to `CLAUDE.md` and `REVIEW-CONTEXT.md`) is the wrong shape for our skill-based structure.
 
 ## When to apply
 
@@ -93,7 +93,7 @@ When the destination table has no match (feedback doesn't fit any existing skill
 5. **Wait for explicit user approval.** No auto-creation.
 6. **On approval, write the file AND log** to `metrics/config-changelog.jsonl` with `type: "learn"`, `section_modified: "<new-skill-path>"`, `previous_value: ""`.
 
-This is the only path that creates new skill files outside an explicit `/agentic-dev-team:agent-skill-authoring` flow.
+This is the only path that creates new skill files outside an explicit skill-authoring flow.
 
 ## Anti-patterns
 
@@ -106,7 +106,7 @@ This is the only path that creates new skill files outside an explicit `/agentic
 
 ## Related
 
-- `agentic-dev-team:feedback-learning` — the plugin skill that owns trigger detection, the JSONL format, rollback, and recurring-correction detection. This skill defers to it for those mechanics.
+- `dev-team:feedback-learning` — the plugin skill that owns trigger detection, the JSONL format, rollback, and recurring-correction detection. This skill defers to it for those mechanics.
 - `generic-gate-pipeline` — Gate 7 explicitly invokes this skill in the cleanup step.
 - `generic-memory-policy` — defines what user-level auto-memory accepts vs project-local `memory/`.
 - `generic-claudemd-authoring` — explains why CLAUDE.md should not grow.
